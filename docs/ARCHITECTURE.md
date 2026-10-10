@@ -30,28 +30,33 @@ Main process (Electron + Node.js)
 
 ## 2. Development flow
 
-`electron-vite` runs two build pipelines:
+Electron Forge starts the application and coordinates its Vite plugin. The plugin runs three build targets:
 
-1. Vite serves the React renderer with hot reload.
-2. Electron main/preload TypeScript is rebuilt and the desktop process is restarted as needed.
+1. the Electron main process;
+2. the sandboxed preload script;
+3. the React renderer, served by Vite with hot reload during development.
 
-During development, the main process loads `ELECTRON_RENDERER_URL`. A packaged build loads the generated `out/renderer/index.html` file instead.
+During development, Forge injects `MAIN_WINDOW_VITE_DEV_SERVER_URL`. A packaged build loads the renderer generated under `.vite/renderer/main_window`. The generated `.vite` directory is an implementation detail and is not committed.
 
 ## 3. Packaging flow
 
 ```text
 TypeScript typecheck
         ↓
-electron-vite build
+Electron Forge Vite plugin
         ↓
-out/main + out/preload + out/renderer
+.vite/build + .vite/renderer
         ↓
-electron-builder
+Electron Forge Packager
         ↓
-DMG (macOS) / NSIS (Windows) / AppImage (Linux)
+Electron Forge Makers
+        ↓
+DMG + ZIP (macOS) / Squirrel (Windows) / DEB + RPM (Linux)
 ```
 
-`electron-builder` reads the `build` section in `package.json`. The first milestone intentionally produces unsigned local packages. Signing, notarization, CI releases and automatic updates are separate concerns and should be learned after local packaging is stable.
+`forge.config.ts` is the single packaging entry point. It configures Electron Packager, platform-specific Makers, Vite builds and Electron security fuses. The first milestone intentionally produces unsigned local packages. Signing, notarization, CI releases and automatic updates are separate concerns and should be learned after local packaging is stable.
+
+Electron Forge is maintained by the Electron ecosystem and is the packaging tool recommended by Electron's official documentation. Its Vite plugin is currently marked experimental, so all Forge packages are pinned to the same exact version to avoid surprise upgrades.
 
 ## 4. Why React
 

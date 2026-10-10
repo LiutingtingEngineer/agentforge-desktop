@@ -12,7 +12,7 @@ The first milestone establishes a small but production-shaped desktop foundation
 - React + TypeScript renderer powered by Vite
 - sandboxed preload script and a typed, narrow IPC bridge
 - Codex-inspired static workbench shell
-- cross-platform installer configuration with electron-builder
+- application packaging and installers managed by Electron Forge
 - architecture notes for learning each layer
 
 The task list and composer are visual placeholders. AI execution, terminal, Git, worktrees and persistence will be added incrementally.
@@ -26,25 +26,27 @@ npm install
 npm run dev
 ```
 
-Build the application:
+Package the application into an unpacked executable:
 
 ```bash
 npm run build
 ```
 
-Create an unpacked app for fast packaging verification:
+Create distributable artifacts for the current platform:
 
 ```bash
-npm run package:dir
+npm run make
 ```
 
-Create an installer for the current platform:
+On macOS, explicitly create the macOS artifacts:
 
 ```bash
-npm run package
+npm run make:mac
 ```
 
-On macOS, `npm run package:mac` creates a DMG under `release/`. Local unsigned builds are suitable for learning and testing; public distribution later requires Apple code signing and notarization.
+Electron Forge writes packaged applications and installers under `out/`. On macOS, the makers create a DMG and ZIP. Local unsigned builds are suitable for learning and testing; public distribution later requires Apple code signing and notarization.
+
+The project pins Forge and its Vite plugin to exact versions. Forge is the application lifecycle and packaging tool; Vite is used inside Forge to compile the main process, preload and React renderer.
 
 ## Architecture
 

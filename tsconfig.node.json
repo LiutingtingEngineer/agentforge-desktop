@@ -8,5 +8,11 @@
     "skipLibCheck": true,
     "types": ["node", "electron"]
   },
-  "include": ["electron.vite.config.ts", "src/main/**/*.ts", "src/preload/**/*.ts"]
+  "include": [
+    "forge.config.ts",
+    "forge.env.d.ts",
+    "vite.*.config.mts",
+    "src/main/**/*.ts",
+    "src/preload/**/*.ts"
+  ]
 }
